@@ -1,7 +1,7 @@
 # Ampersand
 The really, *really* minimalistic static site generator.
 
-Ampersand is the product of being annoyed by how difficult is is to maintain
+Ampersand is the product of being annoyed by how difficult it is to maintain
 a web application's translations by copying and pasting the source code into
 language denoted folders, Apache Cordova not having any native method of
 managing translations and an afternoon to kill.

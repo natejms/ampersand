@@ -1,0 +1,14 @@
+{
+  "name": "{{ name }}",
+  "primary": "{{ lang }}",
+  "path": "{{ path }}",
+  "layouts": "_layouts",
+  "modals": "_modals",
+  "translations": "_translations",
+  "site": "_site",
+  "files": {
+    "index.html": {
+      "{{ lang }}": "_translations/{{ lang }}/index.json"
+    }
+  }
+}

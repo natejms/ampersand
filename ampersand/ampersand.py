@@ -52,13 +52,13 @@ def build_file(modal, new_file, content):
 def translate_file(file_name, config):
 
     layout_files = os.listdir("_layouts")
-    layouts_dict = {}
+    layouts = {}
     for i in range(len(layout_files)):
         f = open(os.path.join(config["layouts"], layout_files[i]), "r")
         contents = f.read()
         f.close()
 
-        layouts_dict[os.path.splitext(layout_files[i])[0]] = contents
+        layouts[os.path.splitext(layout_files[i])[0]] = contents
 
     # Create variables pointing to items in the configuration
     template = config["files"][file_name]
@@ -69,7 +69,7 @@ def translate_file(file_name, config):
     for key, value in sorted(template.items()):
         modal = open(config["files"][file_name][key], "r")
         try:
-            translation = json.loads(modal.read())
+            trans = json.loads(modal.read())
         except json.decoder.JSONDecodeError as e:
             print("It seems like you have a problem with one of your " +
                 "translation files. Check that and then try again.")
@@ -81,12 +81,10 @@ def translate_file(file_name, config):
             call(["mkdir", config["site"]+"/"+key])
         print(" * Translating '%s' in '%s'" % (template_path, key))
 
-        # Combining translation templates with layouts
-        combined = translation.copy()
-        combined.update(layouts_dict)
-
         # Build the translation
-        build_file(template_path, config["site"]+"/"+key+"/"+file_name, combined)
+        build_file(template_path,
+            os.path.join(config["site"], key, file_name),
+            {"trans": trans, "layouts": layouts, "config": config})
 
 def ampersand():
     if len(args) > 1:

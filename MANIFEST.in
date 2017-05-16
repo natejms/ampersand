@@ -1,3 +1,3 @@
-include README.rst
+include README.md
 include ampersand/templates/*
 include LICENSE

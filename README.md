@@ -84,8 +84,8 @@ translations. For an example,
 <!DOCTYPE html>
 <html>
   <body>
-    <h1>{{ header }}</h1>
-    <p>{{ tagline }}</p>
+    <h1>{{ trans.header }}</h1>
+    <p>{{ trans.tagline }}</p>
   </body>
 </html>
 ```

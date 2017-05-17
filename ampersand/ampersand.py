@@ -7,19 +7,31 @@ from html.parser import HTMLParser
 args = sys.argv
 p = os.path # Aliasing os.path to 'p'
 
-def open_config():
-    # Read the config file into a variable
+def read_file(path):
+    f = open(path, "r")
+    content = f.read()
+    f.close()
+    return content
+
+def get_json(path):
     try:
-        f = open("_config.json", "r")
-        config = json.loads(f.read())
-        f.close()
-        return config
+        return json.loads(read_file(path))
     except json.decoder.JSONDecodeError as e:
-        print("It seems like you have an error in your _config.json file.\n" +
+        print("It seems like you have an error in your JSON file.\n" +
             "Check that and try again.")
         print(str(e))
         sys.exit()
 
+def open_config():
+    # Read the config file into a variable
+    try:
+        return get_json("_config.json")
+    except FileNotFoundError:
+        try:
+            return get_json(input("Enter the path (from here) to your _config.json file: "))
+        except KeyboardInterrupt as e:
+            print(str(e))
+            sys.exit()
 def call_for_help():
     # Command usage
     print("\n** Ampersand - the minimal translation manager **\n")
@@ -28,8 +40,8 @@ def call_for_help():
     print("             compile - Compiles the specified modal")
     print("               serve - Compiles all modals\n")
 
-def is_ampersand():
-    if p.isfile("_config.json"):
+def is_ampersand(config):
+    if config["path"] in p.abspath("./"):
         return True
     else:
         print("This folder doesn't seem to be a valid Ampersand site.\nTry " +
@@ -38,10 +50,7 @@ def is_ampersand():
 
 def build_file(modal, new_file, content):
     # Render the template HTML file
-    origin = open(modal, "r")
-    template = origin.read()
-    new_content = pystache.render(template, content)
-    origin.close()
+    new_content = pystache.render(read_file(modal), content)
 
     # Generate the new file using the template
     generated = open(new_file, "w")
@@ -49,12 +58,10 @@ def build_file(modal, new_file, content):
     generated.close()
 
 def translate_file(file_name, config):
-    layout_files = os.listdir("_layouts")
+    layout_files = os.listdir(p.join(config["path"], config["layouts"]))
     layouts = {}
     for i in range(len(layout_files)):
-        f = open(p.join(config["path"], config["layouts"], layout_files[i]), "r")
-        contents = f.read()
-        f.close()
+        contents = read_file(p.join(config["path"], config["layouts"], layout_files[i]))
         layouts[p.splitext(layout_files[i])[0]] = contents
 
     # Create variables pointing to items in the configuration
@@ -64,15 +71,7 @@ def translate_file(file_name, config):
     build_dir = p.join(config["path"], config["site"])
 
     for key, value in sorted(template.items()):
-        modal = open(p.join(config["path"], config["files"][file_name][key]), "r")
-        try:
-            trans = json.loads(modal.read())
-        except json.decoder.JSONDecodeError as e:
-            print("It seems like you have a problem with one of your " +
-                "translation files. Check that and then try again.")
-            print(str(e))
-            sys.exit()
-        modal.close()
+        trans = get_json(p.join(config["path"], config["files"][file_name][key]))
 
         if not p.exists(p.join(config["path"], config["site"], key)):
             os.mkdir(p.join(config["path"], config["site"], key))
@@ -86,9 +85,10 @@ def translate_file(file_name, config):
 
 def ampersand():
     if len(args) > 1:
-        if args[1] == "compile" and is_ampersand():
+        if args[1] != "new":
             config = open_config()
-            if len(args) > 2:
+            if args[1] == "compile":
+
                 print("Compiling page '%s'" % (args[2]))
 
                 # Iterate through the translations and insert the layouts
@@ -97,18 +97,14 @@ def ampersand():
                 except KeyError as e:
                     print("Didn't recognize %s as a file in _config.json" % args[2])
                     sys.exit()
+            elif args[1] == "serve":
 
-        elif args[1] == "serve"  and is_ampersand():
-            config = open_config()
-
-            print("Compiling all pages")
-            files = config["files"]
-            for key, value in sorted(files.items()):
-                translate_file(key, config)
-
-        elif args[1] == "new":
+                print("Compiling all pages")
+                files = config["files"]
+                for key, value in sorted(files.items()):
+                    translate_file(key, config)
+        else:
             if len(args) > 2:
-
                 print("Creating new site '%s'" % (args[2]))
 
                 path = p.abspath(args[2])
@@ -139,7 +135,5 @@ def ampersand():
             else:
                 print("The command \"ampersand new\" takes at least two arguments.")
                 call_for_help()
-        else:
-            call_for_help()
     else:
         call_for_help()

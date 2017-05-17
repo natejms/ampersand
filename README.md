@@ -47,9 +47,9 @@ It gets worse the more languages you add.
 
 ## How is Ampersand the solution?
 
-Ampersand lets you create one HTML file that acts as a template and a JSON files
-containing the translated frases. With this, you can then compile it into
-as many languages as you want.
+Ampersand lets you create one HTML file that acts as a template and a series
+of JSON files containing the translated phrases. With this, you can then compile
+it into as many languages as you want.
 
 With it, you can leave the translation to the localization team and focus on
 your code.

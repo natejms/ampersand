@@ -1,5 +1,5 @@
 # Ampersand
-The really, *really* minimalistic static site generator.
+A really, *really* minimalistic static site generator.
 
 Ampersand is the product of being annoyed by how difficult it is to maintain
 a web application's translations by copying and pasting the source code into

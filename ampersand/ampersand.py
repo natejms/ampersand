@@ -23,9 +23,9 @@ def call_for_help():
     # Command usage
     print("\n** Ampersand - the minimal translation manager **\n")
     print("Usage: ampersand <command>")
-    print("        new <name> - Creates an empty Ampersand website")
-    print("           compile - Compiles the specified modal")
-    print("             serve - Compiles all modals\n")
+    print("   new <name> [lang] - Creates an empty Ampersand website")
+    print("             compile - Compiles the specified modal")
+    print("               serve - Compiles all modals\n")
 
 def is_ampersand():
     if os.path.isfile("_config.json"):
@@ -135,6 +135,7 @@ def ampersand():
                 })
                 print("Created boilerplate website.")
             else:
+                print("The command \"ampersand new\" takes at least two arguments.")
                 call_for_help()
         else:
             call_for_help()

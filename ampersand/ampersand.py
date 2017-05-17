@@ -5,6 +5,7 @@ import pystache
 from html.parser import HTMLParser
 
 args = sys.argv
+p = os.path # Aliasing os.path to 'p'
 
 def open_config():
     # Read the config file into a variable
@@ -28,7 +29,7 @@ def call_for_help():
     print("               serve - Compiles all modals\n")
 
 def is_ampersand():
-    if os.path.isfile("_config.json"):
+    if p.isfile("_config.json"):
         return True
     else:
         print("This folder doesn't seem to be a valid Ampersand site.\nTry " +
@@ -36,7 +37,6 @@ def is_ampersand():
         return False
 
 def build_file(modal, new_file, content):
-
     # Render the template HTML file
     origin = open(modal, "r")
     template = origin.read()
@@ -49,24 +49,22 @@ def build_file(modal, new_file, content):
     generated.close()
 
 def translate_file(file_name, config):
-
     layout_files = os.listdir("_layouts")
     layouts = {}
     for i in range(len(layout_files)):
-        f = open(os.path.join(config["layouts"], layout_files[i]), "r")
+        f = open(p.join(config["path"], config["layouts"], layout_files[i]), "r")
         contents = f.read()
         f.close()
-
-        layouts[os.path.splitext(layout_files[i])[0]] = contents
+        layouts[p.splitext(layout_files[i])[0]] = contents
 
     # Create variables pointing to items in the configuration
     template = config["files"][file_name]
-    template_path = "_modals/" + file_name
+    template_path = p.join(config["path"], "_modals", file_name)
     translation = config["files"][file_name]
-    build_dir = config["site"] + "/"
+    build_dir = p.join(config["path"], config["site"])
 
     for key, value in sorted(template.items()):
-        modal = open(config["files"][file_name][key], "r")
+        modal = open(p.join(config["path"], config["files"][file_name][key]), "r")
         try:
             trans = json.loads(modal.read())
         except json.decoder.JSONDecodeError as e:
@@ -76,14 +74,14 @@ def translate_file(file_name, config):
             sys.exit()
         modal.close()
 
-        if not os.path.exists(os.path.join(config["site"], key)):
-            os.mkdir(os.path.join(config["site"], key))
+        if not p.exists(p.join(config["path"], config["site"], key)):
+            os.mkdir(p.join(config["path"], config["site"], key))
 
         print(" * Translating '%s' in '%s'" % (template_path, key))
 
         # Build the translation
         build_file(template_path,
-            os.path.join(config["site"], key, file_name),
+            p.join(config["path"], config["site"], key, file_name),
             {"trans": trans, "layouts": layouts, "config": config})
 
 def ampersand():
@@ -94,7 +92,11 @@ def ampersand():
                 print("Compiling page '%s'" % (args[2]))
 
                 # Iterate through the translations and insert the layouts
-                translate_file(args[2], config)
+                try:
+                    translate_file(args[2], config)
+                except KeyError as e:
+                    print("Didn't recognize %s as a file in _config.json" % args[2])
+                    sys.exit()
 
         elif args[1] == "serve"  and is_ampersand():
             config = open_config()
@@ -109,26 +111,26 @@ def ampersand():
 
                 print("Creating new site '%s'" % (args[2]))
 
-                path = os.path.abspath(args[2])
+                path = p.abspath(args[2])
                 lang = "en"
                 if len(args) > 3:
                     lang = args[3]
 
                 print(" * Building tree")
                 os.mkdir(args[2])
-                os.mkdir(os.path.join(args[2], "_modals"))
-                open(os.path.join(args[2], "_modals/index.html"), "a+").close()
-                os.mkdir(os.path.join(args[2], "_translations"))
-                os.mkdir(os.path.join(args[2], "_translations", lang))
-                f = open(os.path.join(args[2], "_translations", lang, "index.json"), "a+")
+                os.mkdir(p.join(args[2], "_modals"))
+                open(p.join(args[2], "_modals/index.html"), "a+").close()
+                os.mkdir(p.join(args[2], "_translations"))
+                os.mkdir(p.join(args[2], "_translations", lang))
+                f = open(p.join(args[2], "_translations", lang, "index.json"), "a+")
                 f.write("{\n\n}")
                 f.close()
-                os.mkdir(os.path.join(args[2], "_layouts"))
-                os.mkdir(os.path.join(args[2], "_site"))
+                os.mkdir(p.join(args[2], "_layouts"))
+                os.mkdir(p.join(args[2], "_site"))
 
                 print(" * Building _config.json")
-                abspath = os.path.dirname(os.path.abspath(__file__))
-                build_file(os.path.join(abspath, "templates/_config.json"), args[2] + "/_config.json", {
+                abspath = p.dirname(p.abspath(__file__))
+                build_file(p.join(abspath, "templates/_config.json"), args[2] + "/_config.json", {
                     "name": args[2],
                     "lang": lang,
                     "path": path

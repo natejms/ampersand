@@ -117,11 +117,10 @@ def ampersand():
                 print(" * Building tree")
                 call(["mkdir", args[2]])
                 call(["mkdir", os.path.join(args[2], "_modals")])
-                call(["touch", os.path.join(args[2], "_modals/index.html")])
+                open(os.path.join(args[2], "_modals/index.html"), "a+").close()
                 call(["mkdir", os.path.join(args[2], "_translations")])
                 call(["mkdir", os.path.join(args[2], "_translations", lang)])
-                call(["touch", os.path.join(args[2], "_translations", lang, "index.json")])
-                f = open(os.path.join(args[2], "_translations", lang, "index.json"), "w")
+                f = open(os.path.join(args[2], "_translations", lang, "index.json"), "a+")
                 f.write("{\n\n}")
                 f.close()
                 call(["mkdir", os.path.join(args[2], "_layouts")])
@@ -137,7 +136,6 @@ def ampersand():
                 print("Created boilerplate website.")
             else:
                 call_for_help()
-
         else:
             call_for_help()
     else:

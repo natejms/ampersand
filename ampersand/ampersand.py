@@ -3,7 +3,6 @@ import os
 import json
 import pystache
 from html.parser import HTMLParser
-from subprocess import call
 
 args = sys.argv
 
@@ -77,8 +76,9 @@ def translate_file(file_name, config):
             sys.exit()
         modal.close()
 
-        if not os.path.exists(config["site"]+"/"+key):
-            call(["mkdir", config["site"]+"/"+key])
+        if not os.path.exists(os.path.join(config["site"], key)):
+            os.mkdir(os.path.join(config["site"], key))
+
         print(" * Translating '%s' in '%s'" % (template_path, key))
 
         # Build the translation
@@ -115,16 +115,16 @@ def ampersand():
                     lang = args[3]
 
                 print(" * Building tree")
-                call(["mkdir", args[2]])
-                call(["mkdir", os.path.join(args[2], "_modals")])
+                os.mkdir(args[2])
+                os.mkdir(os.path.join(args[2], "_modals"))
                 open(os.path.join(args[2], "_modals/index.html"), "a+").close()
-                call(["mkdir", os.path.join(args[2], "_translations")])
-                call(["mkdir", os.path.join(args[2], "_translations", lang)])
+                os.mkdir(os.path.join(args[2], "_translations"))
+                os.mkdir(os.path.join(args[2], "_translations", lang))
                 f = open(os.path.join(args[2], "_translations", lang, "index.json"), "a+")
                 f.write("{\n\n}")
                 f.close()
-                call(["mkdir", os.path.join(args[2], "_layouts")])
-                call(["mkdir", os.path.join(args[2], "_site")])
+                os.mkdir(os.path.join(args[2], "_layouts"))
+                os.mkdir(os.path.join(args[2], "_site"))
 
                 print(" * Building _config.json")
                 abspath = os.path.dirname(os.path.abspath(__file__))

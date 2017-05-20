@@ -73,14 +73,18 @@ def translate_file(file_name, config):
     for key, value in sorted(template.items()):
         trans = get_json(p.join(config["path"], config["files"][file_name][key]))
 
-        if not p.exists(p.join(config["path"], config["site"], key)):
-            os.mkdir(p.join(config["path"], config["site"], key))
+        if key != config["primary"]:
+            if not p.exists(p.join(config["path"], config["site"], key)):
+                os.mkdir(p.join(config["path"], config["site"], key))
 
         print(" * Translating '%s' in '%s'" % (template_path, key))
 
         # Build the translation
+        if key != config["primary"]: build_path = p.join(key, file_name)
+        else: build_path = file_name
+
         build_file(template_path,
-            p.join(config["path"], config["site"], key, file_name),
+            p.join(config["path"], config["site"], build_path),
             {"trans": trans, "layouts": layouts, "config": config})
 
 def ampersand():

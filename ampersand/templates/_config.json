@@ -1,7 +1,6 @@
 {
   "name": "{{ name }}",
   "primary": "{{ lang }}",
-  "path": "{{ path }}",
   "layouts": "_layouts",
   "modals": "_modals",
   "translations": "_translations",

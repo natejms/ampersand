@@ -63,8 +63,11 @@ def translate_file(file_name, config, root):
     build_dir = p.join(root, config["site"])
 
     for key, value in sorted(template.items()):
-        trans = get_json(p.join(root, config["files"][file_name][key]))
-
+        try:
+            trans = get_json(p.join(root, config["files"][file_name][key]))
+        except FileNotFoundError as e:
+            print(str(e))
+            sys.exit()
         if key != config["primary"]:
             if not p.exists(p.join(root, config["site"], key)):
                 os.mkdir(p.join(root, config["site"], key))
@@ -87,7 +90,7 @@ except FileNotFoundError:
         location = input("Enter the path (from here) to the root of your project: ")
         config = get_json(p.join(location, "_config.json"))
         root = p.abspath(location)
-    except (KeyboardInterrupt, FileNotFoundError) as e:
+    except (KeyboardInterrupt, FileNotFoundError, NotADirectoryError) as e:
         print(str(e))
         sys.exit()
 

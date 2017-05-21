@@ -84,7 +84,7 @@ def translate_file(file_name, config, root):
 
 try:
     config = get_json("_config.json")
-    root = os.listdir("_config.json")
+    root = p.dirname(p.abspath("./_config.json"))
 except FileNotFoundError:
     try:
         location = input("Enter the path (from here) to the root of your project: ")

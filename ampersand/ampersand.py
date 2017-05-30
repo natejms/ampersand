@@ -23,15 +23,18 @@ def get_json(path):
         sys.exit()
 
 def open_config():
-    # Read the config file into a variable
     try:
-        return get_json("_config.json")
+        config = get_json("_config.json")
+        root = p.dirname(p.abspath("./_config.json"))
     except FileNotFoundError:
         try:
-            return get_json(input("Enter the path (from here) to your _config.json file: "))
-        except KeyboardInterrupt as e:
+            location = input("Enter the path (from here) to the root of your project: ")
+            config = get_json(p.join(location, "_config.json"))
+            root = p.abspath(location)
+        except (KeyboardInterrupt, FileNotFoundError, NotADirectoryError) as e:
             print(str(e))
             sys.exit()
+
 def call_for_help():
     # Command usage
     print("\n** Ampersand - the minimal translation manager **\n")
@@ -82,22 +85,10 @@ def translate_file(file_name, config, root):
             p.join(root, config["site"], build_path),
             {"trans": trans, "layouts": layouts, "config": config})
 
-try:
-    config = get_json("_config.json")
-    root = p.dirname(p.abspath("./_config.json"))
-except FileNotFoundError:
-    try:
-        location = input("Enter the path (from here) to the root of your project: ")
-        config = get_json(p.join(location, "_config.json"))
-        root = p.abspath(location)
-    except (KeyboardInterrupt, FileNotFoundError, NotADirectoryError) as e:
-        print(str(e))
-        sys.exit()
-
 def ampersand():
     if len(args) > 1:
         if args[1] == "compile":
-
+            config = open_config()
             print("Compiling page '%s'" % (args[2]))
 
             # Iterate through the translations and insert the layouts
@@ -107,7 +98,7 @@ def ampersand():
                 print("Didn't recognize %s as a file in _config.json" % args[2])
                 sys.exit()
         elif args[1] == "serve":
-
+            config = open_config()
             print("Compiling all pages")
             files = config["files"]
             for key, value in sorted(files.items()):
@@ -120,12 +111,19 @@ def ampersand():
                     lang = args[3]
 
                 print(" * Building tree")
-                tree = ["_modals", "_trans", "_layouts", "_site"]
-                os.mkdir(args[2])
-                for folder in folders:
+                tree = ["_modals", "_translations", p.join("_translations", lang), "_layouts", "_site"]
+                try:
+                    os.mkdir(args[2])
+                except FileExistsError as e:
+                    print(str(e))
+                    sys.exit()
+
+                for folder in tree:
                     os.mkdir(os.path.join(args[2], folder))
                 open(p.join(args[2], "_modals/index.html"), "a+").close()
-                f = open(p.join(args[2], "_translations", lang, "index.json"), "a+").write("{\n\n}").close()
+                f = open(p.join(args[2], "_translations", lang, "index.json"), "a+")
+                f.write("{\n\n}")
+                f.close()
 
                 print(" * Building _config.json")
                 abspath = p.dirname(p.abspath(__file__))

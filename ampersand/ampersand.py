@@ -120,16 +120,12 @@ def ampersand():
                     lang = args[3]
 
                 print(" * Building tree")
+                tree = ["_modals", "_trans", "_layouts", "_site"]
                 os.mkdir(args[2])
-                os.mkdir(p.join(args[2], "_modals"))
+                for folder in folders:
+                    os.mkdir(os.path.join(args[2], folder))
                 open(p.join(args[2], "_modals/index.html"), "a+").close()
-                os.mkdir(p.join(args[2], "_translations"))
-                os.mkdir(p.join(args[2], "_translations", lang))
-                f = open(p.join(args[2], "_translations", lang, "index.json"), "a+")
-                f.write("{\n\n}")
-                f.close()
-                os.mkdir(p.join(args[2], "_layouts"))
-                os.mkdir(p.join(args[2], "_site"))
+                f = open(p.join(args[2], "_translations", lang, "index.json"), "a+").write("{\n\n}").close()
 
                 print(" * Building _config.json")
                 abspath = p.dirname(p.abspath(__file__))

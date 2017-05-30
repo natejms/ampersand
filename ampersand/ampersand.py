@@ -87,14 +87,17 @@ def ampersand():
     if len(args) > 1:
         if args[1] == "compile":
             config = open_config()
-            print("Compiling page '%s'" % (args[2]))
-
-            # Iterate through the translations and insert the layouts
-            try:
-                translate_file(args[2], config[0], config[1])
-            except KeyError as e:
-                print("Didn't recognize %s as a file in _config.json" % args[2])
-                sys.exit()
+            if len(args) > 2:
+                print("Compiling page '%s'" % (args[2]))
+                # Iterate through the translations and insert the layouts
+                try:
+                    translate_file(args[2], config[0], config[1])
+                except KeyError as e:
+                    print("Didn't recognize %s as a file in _config.json" % args[2])
+                    sys.exit()
+            else:
+                print("The command \"ampersand compile\" takes at least two arguments.")
+                call_for_help()
         elif args[1] == "serve":
             config = open_config()
             print("Compiling all pages")

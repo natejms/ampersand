@@ -104,7 +104,7 @@ def ampersand():
             files = config[0]["files"]
             for key, value in sorted(files.items()):
                 translate_file(key, config[0], config[1])
-        else:
+        elif args[1] == "new":
             if len(args) > 2:
                 print("Creating new site '%s'" % (args[2]))
                 lang = "en"
@@ -136,5 +136,8 @@ def ampersand():
             else:
                 print("The command \"ampersand new\" takes at least two arguments.")
                 call_for_help()
+        else:
+            print("That doesn't seem to be a valid command...")
+            call_for_help()
     else:
         call_for_help()

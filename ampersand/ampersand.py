@@ -24,13 +24,11 @@ def get_json(path):
 
 def open_config():
     try:
-        config = get_json("_config.json")
-        root = p.dirname(p.abspath("./_config.json"))
+        return (get_json("_config.json"), p.dirname(p.abspath("./_config.json")))
     except FileNotFoundError:
         try:
             location = input("Enter the path (from here) to the root of your project: ")
-            config = get_json(p.join(location, "_config.json"))
-            root = p.abspath(location)
+            return (get_json(p.join(location, "_config.json")), p.abspath(location))
         except (KeyboardInterrupt, FileNotFoundError, NotADirectoryError) as e:
             print(str(e))
             sys.exit()
@@ -93,16 +91,16 @@ def ampersand():
 
             # Iterate through the translations and insert the layouts
             try:
-                translate_file(args[2], config, root)
+                translate_file(args[2], config[0], config[1])
             except KeyError as e:
                 print("Didn't recognize %s as a file in _config.json" % args[2])
                 sys.exit()
         elif args[1] == "serve":
             config = open_config()
             print("Compiling all pages")
-            files = config["files"]
+            files = config[0]["files"]
             for key, value in sorted(files.items()):
-                translate_file(key, config, root)
+                translate_file(key, config[0], config[1])
         else:
             if len(args) > 2:
                 print("Creating new site '%s'" % (args[2]))

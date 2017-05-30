@@ -69,14 +69,14 @@ $ ampersand new MyWebsite en
 ```
 
 The `ampersand new` command takes two arguments: your title and primary
-language. The title is required, though the primary language can be ommited,
+language. The title is required, though the primary language can be omitted,
 defaulting to English (en)
 
 You don't *need* to refer to each language with its two letter code, but it
 works well from an organizational standpoint.
 
-Next, develop your webpage using Moustache templates in the place of each frase.
-Once finished, create a JSON file with the same name to contain your
+Next, develop your web page using Moustache templates in the place of each
+phrase. Once finished, create a JSON file with the same name to contain your
 translations. For an example,
 
 `_modals/index.html`
@@ -107,8 +107,8 @@ $ ampersand serve
 
 ## Configuration
 
-Every Ampersand site comes with a file named `_config.json` (incase you were
-wondering, this `_config.json` file is how Ampersand recognizes a directory
+Every Ampersand site comes with a file named `_config.json` (in case you were
+wondering, this `_config.json` file is how Ampersand recognizes a directory 
 as an Ampersand site). This file comes with some basic configurations that you
 can change at any time. By default, it should look something like this:
 

@@ -69,6 +69,12 @@ def translate_file(file_name, config, root):
         except FileNotFoundError as e:
             print(str(e))
             sys.exit()
+
+        try:
+            _global = get_json(p.join(root, config["translations"], key, "_global.json"))
+        except FileNotFoundError:
+            _global = {}
+
         if key != config["primary"]:
             if not p.exists(p.join(root, config["site"], key)):
                 os.mkdir(p.join(root, config["site"], key))
@@ -81,7 +87,7 @@ def translate_file(file_name, config, root):
 
         build_file(template_path,
             p.join(root, config["site"], build_path),
-            {"trans": trans, "layouts": layouts, "config": config})
+            {"trans": trans, "layouts": layouts, "config": config, "global": _global})
 
 def ampersand():
     if len(args) > 1:

@@ -112,7 +112,7 @@ def ampersand():
                     lang = args[3]
 
                 print(" * Building tree")
-                tree = ["_modals", "_translations", p.join("_translations", lang), "_layouts", "_site"]
+                tree = ["_modals", "_trans", p.join("_trans", lang), "_layouts", "_site"]
                 try:
                     os.mkdir(args[2])
                 except FileExistsError as e:
@@ -122,7 +122,7 @@ def ampersand():
                 for folder in tree:
                     os.mkdir(os.path.join(args[2], folder))
                 open(p.join(args[2], "_modals/index.html"), "a+").close()
-                f = open(p.join(args[2], "_translations", lang, "index.json"), "a+")
+                f = open(p.join(args[2], "_trans", lang, "index.json"), "a+")
                 f.write("{\n\n}")
                 f.close()
 

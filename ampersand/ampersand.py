@@ -24,11 +24,11 @@ def get_json(path):
 
 def open_config():
     try:
-        return (get_json("_config.json"), p.dirname(p.abspath("./_config.json")))
+        return (get_json("_ampersand.json"), p.dirname(p.abspath("./_ampersand.json")))
     except FileNotFoundError:
         try:
             location = input("Enter the path (from here) to the root of your project: ")
-            return (get_json(p.join(location, "_config.json")), p.abspath(location))
+            return (get_json(p.join(location, "_ampersand.json")), p.abspath(location))
         except (KeyboardInterrupt, FileNotFoundError, NotADirectoryError) as e:
             print(str(e))
             sys.exit()
@@ -93,7 +93,7 @@ def ampersand():
                 try:
                     translate_file(args[2], config[0], config[1])
                 except KeyError as e:
-                    print("Didn't recognize %s as a file in _config.json" % args[2])
+                    print("Didn't recognize %s as a file in _ampersand.json" % args[2])
                     sys.exit()
             else:
                 print("The command \"ampersand compile\" takes at least two arguments.")
@@ -126,9 +126,9 @@ def ampersand():
                 f.write("{\n\n}")
                 f.close()
 
-                print(" * Building _config.json")
+                print(" * Building _ampersand.json")
                 abspath = p.dirname(p.abspath(__file__))
-                build_file(p.join(abspath, "templates/_config.json"), args[2] + "/_config.json", {
+                build_file(p.join(abspath, "templates/_ampersand.json"), args[2] + "/_ampersand.json", {
                     "name": args[2],
                     "lang": lang
                 })

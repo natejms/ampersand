@@ -1,0 +1,52 @@
+@font-face {
+  font-family: "montserrat";
+  src: url("../font/montserrat.woff");
+}
+
+body {
+  font-family: "montserrat"
+}
+
+.hero {
+  padding: 40px;
+  background-color: #E74C3C;
+  color: white;
+}
+
+.page-header { font-size: 60px; text-align: center }
+
+.hero h2 { font-size: 40px }
+
+.intro p { padding-bottom: 10px }
+
+.learn-more { width: 150px; margin: auto }
+
+.quickstart {
+  padding: 20px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  border-radius: 5px;
+
+  font-family: monospace;
+  line-height: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: #2C3E50;
+  color: #BDC3C7;
+}
+
+.line {
+  color: #2ECC71
+}
+
+.reasons {
+  padding: 30px;
+  padding-bottom: 30px;
+  background-color: #ECF0F1;
+}
+
+@media screen and (max-width: 786px) {
+  .page-header { font-size: 40px }
+  .intro { padding-bottom: 30px }
+  .reasons { text-align: center }
+}

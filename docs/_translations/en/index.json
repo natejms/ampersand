@@ -1,0 +1,16 @@
+{
+  "header": "The really, <em>really</em> minimalistic static site generator",
+  "tagline": "#letcodebecode",
+  "outline": "Managing multiple translations of a website statically is painful, and no one likes dynamic web pages these days. <strong>Ampersand</strong> is the solution.",
+  "learn-more": "Learn more",
+
+  "r1-header": "No more complications.",
+  "r1-body": "Managing website or web application translations statically requires you to ensure numerous pages are accommodated with each small modification. Ampersand eliminates this problem by separating your code from your text.",
+
+
+  "r2-header": "No more repetition.",
+  "r2-body": "Ampersand helps you avoid the need to copy and paste code by giving you the ability to create website-wide headers, global translations and more reusable content",
+
+  "r3-header": "No more waiting.",
+  "r3-body": "Separating your translations from your code makes your life easier. Plus, with its philosophy of simplicity, Ampersand websites can be built quickly and efficiently."
+}

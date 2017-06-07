@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ config.name }}</title>
+
+  {{ layouts.head }}
+</head>
+
+<body>
+  <div class="hero">
+    <h1 class="page-header">&amp; Ampersand</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 intro">
+          <h2>{{ trans.header }}</h2>
+          <h3>{{ trans.tagline }}</h3>
+          <p>{{ trans.outline }}</p>
+          <div class="learn-more">
+            <a href="https://pypi.python.org/pypi/ampersand/0.3.0" class="btn btn-block btn-success btn-lg" type="button" name="button">{{ trans.learn-more }}</a>
+          </div>
+        </div>
+        <div class="col-md-6 quickstart">
+          <div class="middle">
+            <p><span class="line">$</span> pip install ampersand</p>
+            <p><span class="line">$</span> ampersand new MyWebsite</p>
+            <p><span class="line">$</span> cd MyWebsite</p>
+            <p><span class="line">$</span> ampersand serve</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reasons container-fluid">
+    <div class="row">
+      <div class="col-md-4">
+        <h3><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> {{ trans.r1-header }}</h3>
+        <p>{{ trans.r1-body }}</p>
+      </div>
+      <div class="col-md-4">
+        <h3><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> {{ trans.r2-header }}</h3>
+        <p>{{ trans.r2-body }}</p>
+      </div>
+      <div class="col-md-4">
+        <h3><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> {{ trans.r3-header }}</h3>
+        <p>{{ trans.r3-body }}</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+
+</html>

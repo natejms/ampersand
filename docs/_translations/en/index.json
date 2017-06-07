@@ -3,6 +3,7 @@
   "tagline": "#letcodebecode",
   "outline": "Managing multiple translations of a website statically is painful, and no one likes dynamic web pages these days. <strong>Ampersand</strong> is the solution.",
   "learn-more": "Learn more",
+  "contribute": "Contribute",
 
   "r1-header": "No more complications.",
   "r1-body": "Managing website or web application translations statically requires you to ensure numerous pages are accommodated with each small modification. Ampersand eliminates this problem by separating your code from your text.",

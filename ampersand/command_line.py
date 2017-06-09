@@ -1,4 +1,4 @@
-from ampersand import ampersand
+from ampersand import handler
 
 def main():
-    ampersand.ampersand()
+    handler.amp()

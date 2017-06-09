@@ -51,12 +51,6 @@ def build_file(modal, new_file, content):
     generated.close()
 
 def translate_file(file_name, config, root):
-    layout_files = os.listdir(p.join(root, config["layouts"]))
-    layouts = {}
-    for i in range(len(layout_files)):
-        contents = read_file(p.join(root, config["layouts"], layout_files[i]))
-        layouts[p.splitext(layout_files[i])[0]] = contents
-
     # Create variables pointing to items in the configuration
     template = config["files"][file_name]
     template_path = p.join(root, "_modals", file_name)
@@ -74,6 +68,13 @@ def translate_file(file_name, config, root):
             _global = get_json(p.join(root, config["translations"], key, "_global.json"))
         except FileNotFoundError:
             _global = {}
+
+        layout_files = os.listdir(p.join(root, config["layouts"]))
+        layouts = {}
+        for i in range(len(layout_files)):
+            contents = read_file(p.join(root, config["layouts"], layout_files[i]))
+            layouts[p.splitext(layout_files[i])[0]] = pystache.render(
+                contents, {"config": config, "global": _global})
 
         for t_key, t_value in sorted(trans.items()):
             if t_value.startswith("file:"):

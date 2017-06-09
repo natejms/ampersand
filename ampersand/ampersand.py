@@ -75,6 +75,12 @@ def translate_file(file_name, config, root):
         except FileNotFoundError:
             _global = {}
 
+        for t_key, t_value in sorted(trans.items()):
+            if t_value.startswith("file:"):
+                trans[t_key] = read_file(
+                    p.join(root, p.dirname(translation[key]),
+                    t_value.replace("file:", "")))
+
         if key != config["primary"]:
             if not p.exists(p.join(root, config["site"], key)):
                 os.mkdir(p.join(root, config["site"], key))

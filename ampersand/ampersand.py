@@ -2,7 +2,6 @@ import sys
 import os
 import json
 import pystache
-from html.parser import HTMLParser
 
 args = sys.argv
 p = os.path # Aliasing os.path to 'p'
@@ -47,7 +46,7 @@ def build_file(modal, new_file, content):
 
     # Generate the new file using the template
     generated = open(new_file, "w")
-    generated.write(HTMLParser().unescape(new_content))
+    generated.write(new_content)
     generated.close()
 
 def translate_file(file_name, config, root):

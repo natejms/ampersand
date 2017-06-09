@@ -36,7 +36,7 @@ def open_config():
 def call_for_help():
     # Command usage
     print("\n** Ampersand - the minimal translation manager **\n")
-    print("Usage: ampersand <command>")
+    print("Usage: amp <command>")
     print("   new <name> [lang] - Creates an empty Ampersand website")
     print("             compile - Compiles the specified modal")
     print("               serve - Compiles all modals\n")
@@ -109,7 +109,7 @@ def ampersand():
                     print("Didn't recognize %s as a file in _ampersand.json" % args[2])
                     sys.exit()
             else:
-                print("The command \"ampersand compile\" takes at least two arguments.")
+                print("The command \"amp compile\" takes at least two arguments.")
                 call_for_help()
         elif args[1] == "serve":
             config = open_config()
@@ -147,7 +147,7 @@ def ampersand():
                 })
                 print("Created boilerplate website.")
             else:
-                print("The command \"ampersand new\" takes at least two arguments.")
+                print("The command \"amp new\" takes at least two arguments.")
                 call_for_help()
         else:
             print("That doesn't seem to be a valid command...")

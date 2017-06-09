@@ -23,7 +23,10 @@ setup(
     license = "MIT",
     packages = ["ampersand"],
     entry_points = {
-        "console_scripts": ["ampersand=ampersand.command_line:main"]
+        "console_scripts": [
+            "ampersand=ampersand.command_line:main",
+            "amp=ampersand.command_line:main"
+        ]
     },
     install_requires = [
         "pystache"

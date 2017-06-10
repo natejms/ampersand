@@ -25,7 +25,7 @@ def build_file(modal, new_file, content):
     generated.write(new_content)
     generated.close()
 
-def translate_file(file_name, site):
+def collect(file_name, site):
     # Create variables pointing to items in the configuration
     root = site.root
     config = site.config
@@ -34,6 +34,8 @@ def translate_file(file_name, site):
     template_path = p.join(root, "_modals", file_name)
     translation = config["files"][file_name]
     build_dir = p.join(root, config["site"])
+
+    pages = {}
 
     for key, value in sorted(template.items()):
         try:
@@ -60,10 +62,6 @@ def translate_file(file_name, site):
                     p.join(root, p.dirname(translation[key]),
                     t_value.replace("file:", "")))
 
-        if key != config["primary"]:
-            if not p.exists(p.join(root, config["site"], key)):
-                os.mkdir(p.join(root, config["site"], key))
-
         print(" * Translating '%s' in '%s'" % (template_path, key))
 
         # Build the translation
@@ -74,5 +72,23 @@ def translate_file(file_name, site):
         for key, value in sorted(site.config["plugins"].items()):
             content = site.plugin_run(key, content)
 
-        build_file(template_path,
-            p.join(root, config["site"], build_path), content)
+        pages[key] = content
+    return pages
+
+def build_pages(content, site):
+    config = site.config
+    root = site.root
+
+    for key, value in sorted(config["plugins"].items()):
+        site.plugin_run(key, content)
+
+    for key, value in sorted(content.items()):
+        for k, v in sorted(content[key].items()):
+            if k != config["primary"]:
+                if not p.exists(p.join(root, config["site"], key)):
+                    os.mkdir(p.join(root, config["site"], k))
+
+            if k != config["primary"]: build_path = p.join(k, key)
+            else: build_path = key
+            build_file(config["files"][key][k],
+                p.join(site.root, site.config["site"], build_path), content)

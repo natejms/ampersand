@@ -25,14 +25,18 @@ class Ampersand(object):
 
     def serve(self):
         print("Compiling all pages")
+        pages = {}
         for key, value in sorted(self.config["files"].items()):
-            build.translate_file(key, self)
+            print(key)
+            pages[key] = build.collect(key, self)
+
+        build.build_pages(pages, self)
 
     def compile(self, filename):
         print("Compiling page '%s'" % filename)
         # Iterate through the translations and insert the layouts
         try:
-            build.translate_file(filename, self)
+            build.build_pages({filename: build.collect(filename, self)}, self)
         except KeyError:
             print("Didn't recognize %s as a file in _ampersand.json" % filename)
             sys.exit()

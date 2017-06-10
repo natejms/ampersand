@@ -25,8 +25,11 @@ def build_file(modal, new_file, content):
     generated.write(new_content)
     generated.close()
 
-def translate_file(file_name, config, root):
+def translate_file(file_name, site):
     # Create variables pointing to items in the configuration
+    root = site.root
+    config = site.config
+
     template = config["files"][file_name]
     template_path = p.join(root, "_modals", file_name)
     translation = config["files"][file_name]
@@ -67,6 +70,9 @@ def translate_file(file_name, config, root):
         if key != config["primary"]: build_path = p.join(key, file_name)
         else: build_path = file_name
 
+        content = {"trans": trans, "layouts": layouts, "config": config, "global": _global}
+        for key, value in sorted(site.config["plugins"].items()):
+            content = site.plugin_run(key, content)
+
         build_file(template_path,
-            p.join(root, config["site"], build_path),
-            {"trans": trans, "layouts": layouts, "config": config, "global": _global})
+            p.join(root, config["site"], build_path), content)

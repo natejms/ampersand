@@ -3,11 +3,13 @@
   "primary": "{{ lang }}",
   "layouts": "_layouts",
   "modals": "_modals",
+  "modules": "_plugins",
   "translations": "_trans",
   "site": "_site",
   "files": {
     "index.html": {
       "{{ lang }}": "_trans/{{ lang }}/index.json"
     }
-  }
+  },
+  "plugins": {}
 }

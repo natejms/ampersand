@@ -3,7 +3,10 @@ import sys, os, json, pystache
 args = sys.argv
 p = os.path # Aliasing os.path to 'p'
 
-def call_for_help():
+def call_for_help(msg):
+    if msg != "":
+        print(msg)
+
     # Command usage
     print("\n** Ampersand - the minimal translation manager **\n")
     print("Usage: amp <command>")
@@ -18,8 +21,7 @@ def amp():
             if len(args) > 2:
                 site.compile(args[2])
             else:
-                print("The command \"amp compile\" takes at least three arguments.")
-                call_for_help()
+                call_for_help("The command \"amp compile\" takes at least three arguments.")
         elif args[1] == "serve":
             site = ampersand.Ampersand()
             site.serve()
@@ -31,7 +33,7 @@ def amp():
                     lang = args[3]
 
                 print(" * Building tree")
-                tree = ["_modals", "_trans", p.join("_trans", lang), "_layouts", "_site"]
+                tree = ["_modals", "_trans", p.join("_trans", lang), "_layouts", "_site", "_plugins"]
                 try:
                     os.mkdir(args[2])
                 except FileExistsError as e:
@@ -53,10 +55,17 @@ def amp():
                 })
                 print("Created boilerplate website.")
             else:
-                print("The command \"amp new\" takes at least two arguments.")
-                call_for_help()
+                call_for_help("The command \"amp new\" takes at least two arguments.")
+        elif args[1] == "plugin":
+            if len(args) > 3:
+                site = ampersand.Ampersand()
+                if args[2] == "add":
+                    site.plugin_add(args[3])
+                elif args[2] == "remove":
+                    site.plugin_remove(args[3])
+            else:
+                call_for_help("The command \"amp plugin\" requires at least three arguments")
         else:
-            print("That doesn't seem to be a valid command...")
-            call_for_help()
+            call_for_help("That doesn't seem to be a valid command...")
     else:
-        call_for_help()
+        call_for_help("Missing arguments!")

@@ -65,13 +65,6 @@ def collect(file_name, site):
             layouts[p.splitext(layout_files[i])[0]] = pystache.render(
                 contents, {"config": config, "global": _global})
 
-        # Read any external file translations into the dictionary
-        for t_key, t_value in sorted(trans.items()):
-            if t_value.startswith("file:"):
-                trans[t_key] = read_file(
-                    p.join(root, p.dirname(translation[key]),
-                    t_value.replace("file:", "")))
-
         # Assign the collected contents to the pages dictionary
         content = {"trans": trans, "layouts": layouts, "config": config, "global": _global}
 

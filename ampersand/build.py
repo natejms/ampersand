@@ -73,7 +73,6 @@ def collect(file_name, site):
                     t_value.replace("file:", "")))
 
         # Assign the collected contents to the pages dictionary
-        print(" * Translating '%s' in '%s'" % (template_path, key))
         content = {"trans": trans, "layouts": layouts, "config": config, "global": _global}
 
         pages[key] = content

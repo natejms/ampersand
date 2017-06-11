@@ -10,18 +10,20 @@ def call_for_help(msg):
 
     # Command usage
     print("\n** Ampersand - the minimal translation manager **\n")
-    print("Usage: amp <command> [args]")
+    print("Usage: amp <command> [args]\n")
     print("   new <name> [lang] - Creates an empty Ampersand website")
     print("      compile <file> - Compiles the specified modal")
-    print("    plugin <command> -  Manages plugins\n")
-    print("            add <name> - Adds a plugin via Git\n")
-    print("         remove <name> - Removes a plugin\n")
-    print("               serve - Compiles all modals\n")
+    print("    plugin <command> -  Manages plugins")
+    print("            add <name> - Adds a plugin via Git")
+    print("         remove <name> - Removes a plugin")
+    print("               serve - Compiles all modals")
 
 def amp():
 
     if len(args) > 1:
         if args[1] == "compile":
+
+            print("Initializing the website...")
             site = ampersand.Ampersand()
             if len(args) > 2:
                 # Compiles the specified web page
@@ -32,6 +34,7 @@ def amp():
 
         elif args[1] == "serve":
             # Serves all web pages
+            print("Initializing the website...")
             site = ampersand.Ampersand()
             site.serve()
 

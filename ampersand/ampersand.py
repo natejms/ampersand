@@ -35,7 +35,7 @@ class Ampersand(object):
 
     def serve(self):
 
-        print("Compiling all pages")
+        print(" * Collecting all pages")
 
         # Create an empty dictionary to store each pages content
         pages = {}
@@ -44,19 +44,25 @@ class Ampersand(object):
             pages[key] = build.collect(key, self)
 
         # Build the pages
+        print(" * Building pages")
         build.build_pages(pages, self)
+
+        print("Done.")
 
     def compile(self, filename):
 
-        print("Compiling page '%s'" % filename)
         # Try to build the specified page
+        print("Compiling page '%s'" % filename)
         try:
+            print(" * Building page")
             build.build_pages({filename: build.collect(filename, self)}, self)
 
         except KeyError:
             # Exit if not found in _ampersand.json
             print("Didn't recognize %s as a file in _ampersand.json" % filename)
             sys.exit()
+
+        print("Done.")
 
     def plugin_add(self, url):
 
@@ -67,15 +73,19 @@ class Ampersand(object):
 
             # Download the plugin via git
             print("Installing Ampersand plugin '%s'" % plugin)
-            subprocess.call(["git", "clone", url, plugin_path])
+            try:
+                clone = subprocess.check_call(["git", "clone", url, plugin_path])
 
-            # Update the _ampersand.json file by adding the plugin
-            self.config["plugins"][p.basename(plugin)] = p.join(
-                self.config["modules"], plugin )
-            updated = open(p.join(self.root, "_ampersand.json"), "w")
-            updated.write(json.dumps(self.config, indent=4))
-            updated.close()
-
+                # Update the _ampersand.json file by adding the plugin
+                self.config["plugins"][p.basename(plugin)] = p.join(
+                    self.config["modules"], plugin )
+                updated = open(p.join(self.root, "_ampersand.json"), "w")
+                updated.write(json.dumps(self.config, indent=4))
+                updated.close()
+            except subprocess.CalledProcessError as e:
+                print(str(e))
+                sys.exit()
+                
         except KeyError as e:
             print("Missing entry in your configuration file: %s" % str(e))
 
@@ -92,7 +102,7 @@ class Ampersand(object):
             updated.write(json.dumps(self.config, indent=4))
             updated.close()
 
-        except KeyError:
+        except (KeyError, FileNotFoundError):
             print("Failed to remove plugin '%s' as it is not installed." % name)
             sys.exit()
 

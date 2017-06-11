@@ -104,8 +104,9 @@ class Ampersand(object):
                 p.join(self.root, self.config["plugins"][name], "_plugin.json"))
 
             # Load and run the module
-            module = importlib.import_module("main", name)
-            content = module.main(content)
+            sys.path.append(p.join(self.root, self.config["plugins"][name]))
+            module = importlib.import_module(plugin["init"], name)
+            content = module.main(content, self)
             return content
 
         except (KeyError, FileNotFoundError) as e:

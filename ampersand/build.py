@@ -75,8 +75,6 @@ def collect(file_name, site):
         # Assign the collected contents to the pages dictionary
         print(" * Translating '%s' in '%s'" % (template_path, key))
         content = {"trans": trans, "layouts": layouts, "config": config, "global": _global}
-        for key, value in sorted(site.config["plugins"].items()):
-            content = site.plugin_run(key, content)
 
         pages[key] = content
 
@@ -103,5 +101,7 @@ def build_pages(content, site):
             else: build_path = key
 
             # Build the file
-            build_file(config["files"][key][k],
-                p.join(site.root, site.config["site"], build_path), content)
+            build_file(
+                p.join(root, config["modals"], key),
+                p.join(site.root, site.config["site"], build_path),
+                content[key][k])

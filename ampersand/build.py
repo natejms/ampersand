@@ -44,7 +44,7 @@ def collect(file_name, site):
         try:
             trans = get_json(p.join(root, config["files"][file_name][key]))
 
-        except FileNotFoundError as e:
+        except OSError as e:
             print(str(e))
             sys.exit()
 
@@ -52,7 +52,7 @@ def collect(file_name, site):
         try:
             _global = get_json(p.join(root, config["translations"], key, "_global.json"))
 
-        except FileNotFoundError:
+        except OSError:
             _global = {}
 
 

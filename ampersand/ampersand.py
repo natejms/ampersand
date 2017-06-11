@@ -14,7 +14,7 @@ class Ampersand(object):
             config = build.get_json("_ampersand.json")
             root = p.dirname(p.abspath("./_ampersand.json"))
 
-        except FileNotFoundError:
+        except OSError:
             # Ask the user where to find the _ampersand.json file
 
             try:
@@ -23,9 +23,7 @@ class Ampersand(object):
                 config = build.get_json(p.join(location, "_ampersand.json"))
                 root = p.abspath(location)
 
-            except (KeyboardInterrupt,
-                    FileNotFoundError,
-                    NotADirectoryError) as e:
+            except (KeyboardInterrupt, OSError) as e:
 
                 print(str(e))
                 sys.exit()
@@ -85,7 +83,7 @@ class Ampersand(object):
             except subprocess.CalledProcessError as e:
                 print(str(e))
                 sys.exit()
-                
+
         except KeyError as e:
             print("Missing entry in your configuration file: %s" % str(e))
 
@@ -119,6 +117,7 @@ class Ampersand(object):
             content = module.main(content, self)
             return content
 
-        except (KeyError, FileNotFoundError) as e:
+        except (KeyError, FileNotFoundError,
+                ImportError, AttributeError) as e:
             print("Failed to run plugin '%s': %s" % (name, e))
             return content

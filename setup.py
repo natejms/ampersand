@@ -6,8 +6,8 @@ def readme():
 
 setup(
     name = "ampersand",
-    version = "0.3.0",
-    description = "A really, really minimalistic static site generator",
+    version = "0.4.0",
+    description = "The really, really minimalistic static site generator",
     long_description = readme(),
     classifiers = [
         "License :: OSI Approved :: MIT License",
@@ -16,7 +16,7 @@ setup(
         "Topic :: Internet",
         "Environment :: Console"
     ],
-    keywords = "ampersand static site generator localization globalization translation",
+    keywords = "ampersand amp static site generator localization globalization translation",
     url = "http://github.com/natejms/ampersand",
     author = "Nathan Scott",
     author_email = "natejms@outlook.com",

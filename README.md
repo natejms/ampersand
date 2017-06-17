@@ -1,43 +1,38 @@
 # Ampersand
-A really, *really* minimalistic static site generator.
 
-Ampersand is the product of being annoyed by how difficult it is to maintain
-a web application's translations by copying and pasting the source code into
-language denoted folders, Apache Cordova not having any native method of
-managing translations and an afternoon to kill.
+The really, *really* minimalistic static site generator.
 
-## What is Ampersand?
+Ampersand is a minimal static site generator designed to help you manage
+multiple translations of a website without needing to do so dynamically. On its
+own, Ampersand is a command line utility that allows you to separate the text
+content of your website from the markup and store it in a JSON file where you
+can rebuild your page via Mustache templates.
 
-Ampersand is a lightweight and minimalistic static site generator with the
-primary focus of managing translations of a user interface via the Moustache
-template engine and a whole bunch of JSON.
-
-Traditionally, managing translations of a website would look something like
-this:
+Traditionally, managing translations of a website statically would look
+something like this:
 
 ```
 __ root
 |
 |__ scripts
-____|__ scripts.js
+|  |__ scripts.js
 |
 |__ styles
-____|__ styles.css
+|  |__ styles.css
 |
 |__ lang
     |__ en
-        |__ index.html
-        |__ about.html
-     ___|__ ...
+    |  |__ index.html
+    |  |__ about.html
+    |  |__ ...
     |
     |__ fr
         |__ index.html
         |__ about.html
         |__ ...
-
 ```
 
-In this project, we have a website with two or more English pages that were
+In this project, we have a website with two or more English pages that we
 also translated into French. This works, but what happens when I want to make
 some changes to `index.html`? In the past, it was as easy as making my changes
 and saving. Now, I need to copy those changes over to the `fr` folder and
@@ -51,95 +46,47 @@ Ampersand lets you create one HTML file that acts as a template and a series
 of JSON files containing the translated phrases. With this, you can then compile
 it into as many languages as you want.
 
-With it, you can leave the translation to the localization team and focus on
+Now, you can leave the translation to the globalization team and focus on
 your code.
 
-## Using Ampersand
+## Philosophy
 
-First of all, you'll need to set it up.
+So as you can tell, Ampersand is a pretty straightforward static site generator.
+Some may even argue that it doesn't do much. This is because Ampersand is a
+*minimalistic* static site generator. But of course, all static site generators
+mention minimalism in their mission statement so saying it here doesn't mean
+much. Never the less, Ampersand aims to do what it's supposed to do without
+jumping through too many hoops that don't help it achieve its goal.
+
+## Installation
+
+Setting up Ampersand is fairly simple if you have `pip`. For those of you who
+don't, [python.org](https://packaging.python.org/installing/) has it
+documented.
 
 ```
 $ pip install ampersand
 ```
 
-Then, you can create a new Ampersand site like so:
+For a bleeding edge and developer version, you can clone the repository:
 
 ```
-$ ampersand new MyWebsite en
+$ git clone https://github.com/natejms/ampersand.git
+$ cd ampersand
+$ pip install .
 ```
 
-The `ampersand new` command takes two arguments: your title and primary
-language. The title is required, though the primary language can be omitted,
-defaulting to English (en)
+To learn more about the usage of Ampersand, check out
+[the documentation](https://github.com/natejms/ampersand/wiki)
 
-You don't *need* to refer to each language with its two letter code, but it
-works well from an organizational standpoint.
+## Contributing
 
-Next, develop your web page using Moustache templates in the place of each
-phrase. Once finished, create a JSON file with the same name to contain your
-translations. For an example,
+Interested in making a contribution? Here's a few places where you might be
+able to help out:
 
-`_modals/index.html`
-```
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>{{ trans.header }}</h1>
-    <p>{{ trans.tagline }}</p>
-  </body>
-</html>
-```
+ * Contribute patches and help develop new features
+ * Develop a plugin for Ampersand
+ * Work to improve the documentation
+ * Help spread the word
 
-`_translations/en/index.json`
-```
-{
-  "header": "A new Ampersand website",
-  "tagline": "The really, <em>really</em> minimalistic static site generator"
-}
-```
-
-Once you have your pages set up, run the following command to compile your pages
-into the `_site` directory.
-
-```
-$ ampersand serve
-```
-
-## Configuration
-
-Every Ampersand site comes with a file named `_config.json` (in case you were
-wondering, this `_config.json` file is how Ampersand recognizes a directory 
-as an Ampersand site). This file comes with some basic configurations that you
-can change at any time. By default, it should look something like this:
-
-```
-{
-  "name": "Ampersand",
-  "primary": "en",
-  "path": "/home/you/Documents/Ampersand",
-  "layouts": "_layouts",
-  "modals": "_modals",
-  "translations": "_translations",
-  "site": "_site",
-  "files": {
-    "index.html": {
-      "en": "_translations/en/index.json",
-    }
-  }
-}
-
-```
-
-Every new translation should be added to the object associated with the file
-in `_config.json`.
-
-## Other commands
-
-### Compiling files individually
-
-Usage: ampersand compile <filename>
-
-Example:
-```
-$ ampersand compile _moduals/index.html
-```
+More information can be found in the CONTRIBUTING.md file of this repository.

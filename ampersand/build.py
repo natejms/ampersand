@@ -23,7 +23,11 @@ def build_file(modal, new_file, content):
     new_content = pystache.render(read_file(modal), content)
 
     # Generate the new file using the template
-    generated = open(new_file, "w")
+    try:
+        generated = open(new_file, "w")
+    except FileNotFoundError:
+        os.makedirs(p.dirname(new_file))
+        generated = open(new_file, "w")
     generated.write(new_content)
     generated.close()
 

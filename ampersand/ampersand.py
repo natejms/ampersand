@@ -80,7 +80,7 @@ class Ampersand(object):
                 updated = open(p.join(self.root, "_ampersand.json"), "w")
                 updated.write(json.dumps(self.config, indent=4))
                 updated.close()
-            except subprocess.CalledProcessError as e:
+            except (subprocess.CalledProcessError, KeyboardInterrupt) as e:
                 print(str(e))
                 sys.exit()
 
@@ -92,15 +92,17 @@ class Ampersand(object):
         try:
             # Delete the directory containing the plugin
             print("Removing plugin '%s'" % name)
-            rmtree(p.join( self.root, self.config[ "plugins" ][ name ] ))
+            rmtree(p.join( self.root, self.config["modules"], name ))
+        except FileNotFoundError:
+            pass
 
+        try:
             # Update _ampersand.json by adding the plugin
             self.config["plugins"].pop(name)
             updated = open(p.join(self.root, "_ampersand.json"), "w")
             updated.write(json.dumps(self.config, indent=4))
             updated.close()
-
-        except (KeyError, FileNotFoundError):
+        except KeyError:
             print("Failed to remove plugin '%s' as it is not installed." % name)
             sys.exit()
 

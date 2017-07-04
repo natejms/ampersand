@@ -95,6 +95,9 @@ class Ampersand(object):
             rmtree(p.join( self.root, self.config["modules"], name ))
         except FileNotFoundError:
             pass
+        except PermissionError as e:
+            print(str(e))
+            print("Couldn't remove plugin. You may need to delete it manually.")
 
         try:
             # Update _ampersand.json by adding the plugin

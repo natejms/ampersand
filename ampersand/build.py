@@ -31,6 +31,56 @@ def build_file(modal, new_file, content):
     generated.write(new_content)
     generated.close()
 
+def amp_new(args):
+    # Builds a new Ampersand project
+
+    if args[2][0] is not "-":
+        i = 2
+        name = args[i]
+    else:
+        i = 3
+        name = args[i]
+
+    lang = "en"
+    if len(args) > i + 1:
+        lang = args[i + 1]
+
+    print("Creating new site '%s'" % (name))
+
+    # Build the project tree
+    print(" * Building tree")
+    tree = [
+        "_modals", "_trans", p.join("_trans", lang),
+        "_layouts", "_site", "_plugins"
+    ]
+    try:
+        os.mkdir(args[2])
+    except FileExistsError as e:
+        print(str(e))
+        sys.exit()
+
+    for folder in tree:
+        os.mkdir(os.path.join(name, folder))
+
+    # Create empty files
+    abspath = p.dirname(p.abspath(__file__))
+    open(p.join(name, "_modals", "index.html"), "a+").close()
+    build_file(p.join(abspath, "templates", "page.json"),
+                     p.join(args[2], "_trans", lang, "index.json"),
+                     {})
+
+    # Build the _ampersand.json file
+    print(" * Building _ampersand.json")
+    build_file(
+        p.join(abspath, "templates", "_ampersand.json"),
+        p.join(args[2], "_ampersand.json"), {
+            "name": name,
+            "lang": lang
+        }
+    )
+
+    print("Created boilerplate website.")
+
 def collect(file_name, site):
     # Create variables pointing to items in the configuration
     root = site.root

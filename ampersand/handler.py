@@ -9,30 +9,23 @@ def call_for_help(msg):
         print(msg)
 
     # Command usage
-    print("\n** Ampersand - the minimal translation manager **\n")
-    print("Usage: amp <command> [args]\n")
-    print("   new <name> [lang] - Creates an empty Ampersand website")
-    print("      compile <file> - Compiles the specified modal")
-    print("    plugin <command> -  Manages plugins")
-    print("            add <name> - Adds a plugin via Git")
-    print("         remove <name> - Removes a plugin")
-    print("               serve - Compiles all modals")
+    print("""
+** Ampersand - the minimal translation manager **
+
+Usage: amp <command> [args]
+
+    new <name> [lang] - Creates an empty Ampersand website")
+                serve - Compiles all modals")
+     plugin <command> -  Manages plugins")
+             add <name> - Adds a plugin via Git")
+          remove <name> - Removes a plugin")
+
+    """)
 
 def amp():
 
     if len(args) > 1:
-        if args[1] == "compile":
-
-            print("Initializing the website...")
-            site = ampersand.Ampersand()
-            if len(args) > 2:
-                # Compiles the specified web page
-                site.compile(args[2])
-            else:
-                call_for_help("The command \"amp compile\" takes at least "
-                            + "three arguments.")
-
-        elif args[1] == "serve":
+        if args[1] == "serve":
             # Serves all web pages
             print("Initializing the website...")
             site = ampersand.Ampersand()
@@ -62,14 +55,14 @@ def amp():
                     os.mkdir(os.path.join(args[2], folder))
 
                 # Create empty files
+                abspath = p.dirname(p.abspath(__file__))
                 open(p.join(args[2], "_modals/index.html"), "a+").close()
-                f = open(p.join(args[2], "_trans", lang, "index.json"), "a+")
-                f.write("{\n\n}")
-                f.close()
+                build.build_file(p.join(abspath, "templates", "page.json"),
+                                 p.join(args[2], "_trans", lang, "index.json"),
+                                 {})
 
                 # Build the _ampersand.json file
                 print(" * Building _ampersand.json")
-                abspath = p.dirname(p.abspath(__file__))
                 build.build_file(
                     p.join(abspath, "templates/_ampersand.json"),
                     args[2] + "/_ampersand.json", {

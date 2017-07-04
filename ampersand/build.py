@@ -2,6 +2,7 @@ import sys, os, json, pystache
 p = os.path # Aliasing os.path to 'p'
 
 def read_file(path):
+
     # Open a file and return its contents
     f = open(path, "r")
     content = f.read()
@@ -9,16 +10,36 @@ def read_file(path):
     return content
 
 def get_json(path):
+
     # Load a JSON file into a dictionary
     try:
         return json.loads(read_file(path))
 
     except json.decoder.JSONDecodeError as e:
-        print("It seems like you have an error in your JSON file. Check that and try again.")
+        print("It seems like you have an error in your JSON file. Check that "
+            + "and try again.")
         print(str(e))
         sys.exit()
 
+def get_content(path):
+
+    page = read_file(path)
+    page = page.split("}}}", 1)
+
+    try:
+        content = page[1]
+        try:
+            frontmatter = json.loads("{ %s }" % page[0])
+        except json.decoder.JSONDecodeError:
+            frontmatter = {}
+    except IndexError:
+        content = page[0]
+        frontmatter = {}
+
+    return (frontmatter, content)
+
 def build_file(modal, new_file, content):
+
     # Render the template HTML file
     new_content = pystache.render(read_file(modal), content)
 
@@ -28,55 +49,71 @@ def build_file(modal, new_file, content):
     except FileNotFoundError:
         os.makedirs(p.dirname(new_file))
         generated = open(new_file, "w")
+
     generated.write(new_content)
     generated.close()
 
-def collect(file_name, site):
+def collect(site):
+
     # Create variables pointing to items in the configuration
     root = site.root
     config = site.config
 
-    template = config["files"][file_name]
-    template_path = p.join(root, "_modals", file_name)
-    translation = config["files"][file_name]
-    build_dir = p.join(root, config["site"])
+    content = {}
 
-    pages = {}
+    lang = [name for name in
+           os.listdir(p.join(root, config["translations"]))
+           if p.isdir(p.join(root, config["translations"], name))]
 
-    for key, value in sorted(template.items()):
-        # Read the selected file's translation into the trans variable
-        try:
-            trans = get_json(p.join(root, config["files"][file_name][key]))
+    for directory in lang:
+        lang_dir = p.join(root, config["translations"], directory)
+        pages = os.listdir(lang_dir)
+        content[directory] = {}
 
-        except OSError as e:
-            print(str(e))
-            sys.exit()
+        for page in pages:
+            if not p.isdir(page):
 
-        # Read _global.json into _globale
-        try:
-            _global = get_json(p.join(root, config["translations"], key, "_global.json"))
+                try:
+                    trans = json.loads(read_file(p.join(lang_dir, page)))
+                    page_content = {}
+                    try:
+                        frontmatter = trans["_frontmatter"]
+                    except KeyError:
+                        frontmatter = {}
+                except json.decoder.JSONDecodeError:
+                    trans = {}
+                    text = get_content(p.join(lang_dir, page))
+                    frontmatter = text[0]
+                    page_content = text[1]
 
-        except OSError:
-            _global = {}
+                try:
+                    _global = get_json(p.join(lang_dir, "_global.json"))
+                except OSError:
+                    _global = {}
 
+                layout_files = os.listdir(p.join(root, config["layouts"]))
+                layouts = {}
 
-        layout_files = os.listdir(p.join(root, config["layouts"]))
-        layouts = {}
-        for i in range(len(layout_files)):
-            # Read the layout into "contents"
-            contents = read_file(p.join(root, config["layouts"], layout_files[i]))
-            # Render the layouts using _ampersand.json and _global.json
-            layouts[p.splitext(layout_files[i])[0]] = pystache.render(
-                contents, {"config": config, "global": _global})
+                for i in range(len(layout_files)):
+                    # Read the layout into "contents"
+                    contents = read_file(p.join(root,
+                                                config["layouts"],
+                                                layout_files[i]))
 
-        # Assign the collected contents to the pages dictionary
-        content = {"trans": trans, "layouts": layouts, "config": config, "global": _global}
+                    # Render the layouts using _ampersand.json and _global.json
+                    layouts[p.splitext(layout_files[i])[0]] = pystache.render(
+                        contents, {"config": config, "global": _global})
 
-        pages[key] = content
+                content[directory][page] = {
+                    "frontmatter": frontmatter, "trans": trans,
+                    "content": page_content, "layouts": layouts,
+                    "config": config, "global": _global
+                }
 
-    return pages
+    return content
 
 def build_pages(content, site):
+
     config = site.config
     root = site.root
 
@@ -84,20 +121,22 @@ def build_pages(content, site):
     for key, value in sorted(config["plugins"].items()):
         site.plugin_run(key, content)
 
-    # Iterate through the files
-    for key, value in sorted(content.items()):
-        # Iterate through the translations
-        for k, v in sorted(content[key].items()):
-            # Set up the tree
-            if k != config["primary"]:
-                if not p.exists(p.join(root, config["site"], key)):
-                    os.mkdir(p.join(root, config["site"], k))
+    for lang in sorted(content.keys()):
+        if lang != config["primary"]:
+            if not p.exists(p.join(root, config["site"], config["primary"])):
+                os.mkdir(p.join(root, config["site"], config["primary"]))
 
-            if k != config["primary"]: build_path = p.join(k, key)
-            else: build_path = key
+        for page in sorted(content[lang].keys()):
 
-            # Build the file
-            build_file(
-                p.join(root, config["modals"], key),
-                p.join(site.root, site.config["site"], build_path),
-                content[key][k])
+            if content[lang][page]["frontmatter"] == {}:
+                print(" ** Skipping '%s': Error in the front matter" % page)
+                continue
+
+            fm = content[lang][page]["frontmatter"]
+            try:
+                build_file(p.join(root, config["modals"], fm["modal"]),
+                           p.join(root, config["site"], fm["url"]),
+                           content[lang][page])
+
+            except OSError as e:
+                print(" ** Skipping '%s': %s" % (page, str(e)))

@@ -35,30 +35,11 @@ class Ampersand(object):
 
         print(" * Collecting all pages")
 
-        # Create an empty dictionary to store each pages content
-        pages = {}
-        for key, value in sorted(self.config["files"].items()):
-            # Iterate through the files to build the pages dictionary
-            pages[key] = build.collect(key, self)
+        pages = build.collect(self)
 
         # Build the pages
         print(" * Building pages")
         build.build_pages(pages, self)
-
-        print("Done.")
-
-    def compile(self, filename):
-
-        # Try to build the specified page
-        print("Compiling page '%s'" % filename)
-        try:
-            print(" * Building page")
-            build.build_pages({filename: build.collect(filename, self)}, self)
-
-        except KeyError:
-            # Exit if not found in _ampersand.json
-            print("Didn't recognize %s as a file in _ampersand.json" % filename)
-            sys.exit()
 
         print("Done.")
 

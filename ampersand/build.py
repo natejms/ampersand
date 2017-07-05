@@ -168,7 +168,7 @@ def build_pages(content, site):
 
     # Iterate through the plugins
     for key, value in sorted(config["plugins"].items()):
-        site.plugin_run(key, content)
+        site.plugin_run(key, "builder", content)
 
     for lang in sorted(content.keys()):
         if lang != config["primary"]:

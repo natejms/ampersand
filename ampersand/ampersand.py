@@ -90,17 +90,18 @@ class Ampersand(object):
             print("Failed to remove plugin '%s' as it is not installed." % name)
             sys.exit()
 
-    def plugin_run(self, name, content):
-
+    def plugin_run(self, name, method, content):
         try:
             # Retrieve the _plugin.json file
             plugin = build.get_json(
                 p.join(self.root, self.config["plugins"][name], "_plugin.json"))
 
             # Load and run the module
-            sys.path.append(p.join(self.root, self.config["plugins"][name]))
-            module = importlib.import_module(plugin["init"], name)
-            content = module.main(content, self)
+            if plugin["method"] == method:
+                sys.path.append(p.join(self.root, self.config["plugins"][name]))
+                module = importlib.import_module(plugin["init"], name)
+                content = module.main(content, self)
+
             return content
 
         except (KeyError, FileNotFoundError,

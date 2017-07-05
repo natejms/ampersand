@@ -45,4 +45,6 @@ def amp(args, site):
             call_for_help("The command 'amp plugin' takes at least two more "
                         + "arguments.")
     else:
-        call_for_help("That doesn't seem to be a valid command.")
+        for key in sorted(site.config["plugins"].keys()):
+            site.plugin_run(key, "handler", args)
+        print("Nothing more to do.")

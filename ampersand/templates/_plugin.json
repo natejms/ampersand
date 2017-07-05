@@ -1,3 +1,4 @@
 {
-  "init": "{{ init }}"
+  "init": "{{ init }}",
+  "method": "{{ method }}"
 }

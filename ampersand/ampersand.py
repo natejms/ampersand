@@ -47,7 +47,7 @@ class Ampersand(object):
 
         try:
             # Decide on what to call the plugin and its path
-            plugin = p.splitext(p.split(url)[1])[0]
+            plugin = p.split(url)[1]
             plugin_path = p.join(self.root, self.config["modules"], plugin)
 
             # Download the plugin via git

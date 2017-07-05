@@ -4,10 +4,8 @@ p = os.path # Aliasing os.path to 'p'
 def read_file(path):
 
     # Open a file and return its contents
-    f = open(path, "r")
-    content = f.read()
-    f.close()
-    return content
+    with open(path, "r") as f:
+        return f.read()
 
 def get_json(path):
 
@@ -16,16 +14,16 @@ def get_json(path):
         return json.loads(read_file(path))
 
     except json.decoder.JSONDecodeError as e:
-        print("It seems like you have an error in your JSON file. Check that "
-            + "and try again.")
-        print(str(e))
+        print("Failed to get JSON from '%s': %s" % (path, str(e)))
         sys.exit()
 
 def get_content(path):
 
+    # Collect front matter and content
     page = read_file(path)
     page = page.split("}}}", 1)
 
+    # Load front matter into a dictionary
     try:
         content = page[1]
         try:
@@ -98,8 +96,7 @@ def amp_new(args):
         p.join(args[2], "_ampersand.json"), {
             "name": name,
             "lang": lang
-        }
-    )
+        })
 
     print("Created boilerplate website.")
 
@@ -110,18 +107,21 @@ def collect(site):
 
     content = {}
 
+    # Collect the translation's files into a list
     lang = [name for name in
            os.listdir(p.join(root, config["translations"]))
            if p.isdir(p.join(root, config["translations"], name))]
 
     for directory in lang:
+        # Looping through the language directories
         lang_dir = p.join(root, config["translations"], directory)
         pages = os.listdir(lang_dir)
         content[directory] = {}
 
         for page in pages:
+            # Looping through the pages
             if not p.isdir(page):
-
+                # Getting the front matter
                 try:
                     trans = json.loads(read_file(p.join(lang_dir, page)))
                     page_content = {}
@@ -135,6 +135,7 @@ def collect(site):
                     frontmatter = text[0]
                     page_content = text[1]
 
+                # Getting the global translations
                 try:
                     _global = get_json(p.join(lang_dir, "_global.json"))
                 except OSError:
@@ -171,16 +172,18 @@ def build_pages(content, site):
         site.plugin_run(key, "builder", content)
 
     for lang in sorted(content.keys()):
+        # Loop through each language dictionary
         if lang != config["primary"]:
             if not p.exists(p.join(root, config["site"], config["primary"])):
                 os.mkdir(p.join(root, config["site"], config["primary"]))
 
         for page in sorted(content[lang].keys()):
-
+            # Loop through each page
             if content[lang][page]["frontmatter"] == {}:
                 print(" ** Skipping '%s': Error in the front matter" % page)
                 continue
 
+            # Build the pages
             fm = content[lang][page]["frontmatter"]
             try:
                 build_file(p.join(root, config["modals"], fm["modal"]),

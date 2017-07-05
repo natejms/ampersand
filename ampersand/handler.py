@@ -23,9 +23,11 @@ Usage: amp <command> [args]
 def amp(args, site):
 
     if "serve" in args:
+        # Serve all of the pages
         site.serve()
     elif "plugin" in args:
         if "add" in args:
+            # Add plugins
             url = re.findall(r'(https?://\S+)', " ".join(args))
             if len(url) > 1:
                 for i in url:
@@ -36,6 +38,7 @@ def amp(args, site):
                 call_for_help("The command 'amp plugin add' takes at least one "
                             + "URL.")
         elif "remove" in args:
+            # Remove plugins
             removed = False
             for i in args:
                 if i in site.config["plugins"]:
@@ -45,9 +48,11 @@ def amp(args, site):
             if not removed:
                 print("Couldn't find the plugin.")
         else:
+            # Call for help
             call_for_help("The command 'amp plugin' takes at least two more "
                         + "arguments.")
     else:
+        # Iterate through handler plugins
         for key in sorted(site.config["plugins"].keys()):
             site.plugin_run(key, "handler", args)
         print("Nothing more to do.")

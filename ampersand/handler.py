@@ -30,8 +30,11 @@ def amp(args, site):
             if len(url) > 1:
                 for i in url:
                     site.plugin_add(i)
-            else:
+            elif len(url) == 1:
                 site.plugin_add(url[0])
+            else:
+                call_for_help("The command 'amp plugin add' takes at least one "
+                            + "URL.")
         elif "remove" in args:
             removed = False
             for i in args:

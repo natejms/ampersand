@@ -104,7 +104,7 @@ class Ampersand(object):
 
             return content
 
-        except (KeyError, FileNotFoundError,
+        except (KeyError, OSError, TypeError,
                 ImportError, AttributeError) as e:
             print("Failed to run plugin '%s': %s" % (name, e))
             return content

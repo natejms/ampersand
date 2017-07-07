@@ -167,7 +167,12 @@ def collect(site):
 
                     # Render the layouts using _ampersand.json and _global.json
                     layouts[p.splitext(layout_files[i])[0]] = pystache.render(
-                        contents, {"config": config, "global": _global})
+                        contents, {
+                        "frontmatter": frontmatter, "trans": trans,
+                        "content": content, "config": config,
+                        "global": _global,
+
+                    })
 
                 content[directory][page] = {
                     "frontmatter": frontmatter, "trans": trans,

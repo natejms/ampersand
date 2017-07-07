@@ -75,7 +75,7 @@ def amp_new(args):
     print(" * Building tree")
     tree = [
         "_modals", "_trans", p.join("_trans", lang),
-        "_layouts", "_site", "_plugins"
+        "_includes", "_site", "_plugins"
     ]
     try:
         os.mkdir(args[2])
@@ -156,17 +156,17 @@ def collect(site):
                 except OSError:
                     _global = {}
 
-                layout_files = os.listdir(p.join(root, config["layouts"]))
-                layouts = {}
+                includes_files = os.listdir(p.join(root, config["includes"]))
+                includes = {}
 
-                for i in range(len(layout_files)):
+                for i in range(len(includes_files)):
                     # Read the layout into "contents"
                     contents = read_file(p.join(root,
-                                                config["layouts"],
-                                                layout_files[i]))
+                                                config["includes"],
+                                                includes_files[i]))
 
-                    # Render the layouts using _ampersand.json and _global.json
-                    layouts[p.splitext(layout_files[i])[0]] = pystache.render(
+                    # Render the includes using _ampersand.json and _global.json
+                    includes[p.splitext(layout_files[i])[0]] = pystache.render(
                         contents, {
                         "frontmatter": frontmatter, "trans": trans,
                         "content": content, "config": config,
@@ -176,7 +176,7 @@ def collect(site):
 
                 content[directory][page] = {
                     "frontmatter": frontmatter, "trans": trans,
-                    "content": page_content, "layouts": layouts,
+                    "content": page_content, "includes": includes,
                     "config": config, "global": _global
                 }
 

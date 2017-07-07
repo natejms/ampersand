@@ -1,7 +1,7 @@
 {
   "name": "{{ name }}",
   "primary": "{{ lang }}",
-  "layouts": "_layouts",
+  "includes": "_includes",
   "modals": "_modals",
   "modules": "_plugins",
   "translations": "_trans",

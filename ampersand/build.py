@@ -141,10 +141,12 @@ def collect(site):
                     try:
                         frontmatter = trans["_frontmatter"]
                     except KeyError:
-                        frontmatter = {}
+                        continue
                 except json.decoder.JSONDecodeError:
                     trans = {}
                     text = get_content(p.join(lang_dir, page))
+                    if not text[0]:
+                        continue
                     frontmatter = text[0]
                     page_content = text[1]
 

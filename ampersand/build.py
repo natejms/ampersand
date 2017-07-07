@@ -4,8 +4,12 @@ p = os.path # Aliasing os.path to 'p'
 def read_file(path):
 
     # Open a file and return its contents
-    with open(path, "r") as f:
-        return f.read()
+    try:
+        with open(path, "r") as f:
+            return f.read()
+    except PermissionError as e:
+        print(str(e))
+        sys.exit()
 
 def get_json(path):
 
@@ -115,7 +119,16 @@ def collect(site):
     for directory in lang:
         # Looping through the language directories
         lang_dir = p.join(root, config["translations"], directory)
-        pages = os.listdir(lang_dir)
+        pages = []
+
+        # Iterate through directories and subdirectories
+        for path, dirs, files in os.walk(p.join(config["translations"], )):
+            # Iterate through each file
+            for f in files:
+                # Skip '_trans/lang' when taking the path
+                f_list = os.path.normpath(p.join(path, f)).split(p.sep)
+                pages.append(p.join(*f_list[2:]))
+
         content[directory] = {}
 
         for page in pages:

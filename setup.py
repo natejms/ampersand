@@ -6,7 +6,7 @@ def readme():
 
 setup(
     name = "ampersand",
-    version = "0.5.0",
+    version = "0.5.1",
     description = "The really, really minimalistic static site generator",
     long_description = readme(),
     classifiers = [

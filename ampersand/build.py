@@ -166,7 +166,7 @@ def collect(site):
                                                 includes_files[i]))
 
                     # Render the includes using _ampersand.json and _global.json
-                    includes[p.splitext(layout_files[i])[0]] = pystache.render(
+                    includes[p.splitext(includes_files[i])[0]] = pystache.render(
                         contents, {
                         "frontmatter": frontmatter, "trans": trans,
                         "content": content, "config": config,

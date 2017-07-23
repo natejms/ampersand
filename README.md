@@ -1,13 +1,19 @@
 # Ampersand
 
-The really, *really* minimalistic static site generator.
+The really, *really* minimalistic static site generator. Manage translations
+statically, without any pesky JavaScript for rendering dynamic chunks of
+localized text.
 
-Ampersand is a minimal static site generator designed to help you manage
-multiple translations of a website without needing to do so dynamically. On its
-own, Ampersand is a command line utility that allows you to separate the text
-content of your website from the markup and store it in a JSON file where you
-can rebuild your page via Mustache templates.
+## Features
+ * Separate key phrases (or everything, for that matter) into "modals" and
+ localized content files.
+ * Create includes such as site-wide headers and footers to reduce repetition.
+ * Avoid copy and pasting the same content several times with global
+ translations.
+ * Keep things simple with Mustache templates.
+ * Extend Ampersand with plugins written in Python.
 
+## The problem
 Traditionally, managing translations of a website statically would look
 something like this:
 
@@ -32,19 +38,18 @@ __ root
         |__ ...
 ```
 
-In this project, we have a website with two or more English pages that we
-also translated into French. This works, but what happens when I want to make
-some changes to `index.html`? In the past, it was as easy as making my changes
-and saving. Now, I need to copy those changes over to the `fr` folder and
-adapt.
+Here, we have a website with two or more English pages that we also translated
+into French. This works, but what happens when I want to make some changes to
+`index.html`? Now, I need to copy those changes over to the `fr` folder and
+adapt. When these phrases are wrapped with new UI components, It gets worse the
+more languages you add.
 
-It gets worse the more languages you add.
+## The solution
 
-## How is Ampersand the solution?
-
-Ampersand lets you create one HTML file that acts as a template and a series
-of JSON files containing the translated phrases. With this, you can then compile
-it into as many languages as you want.
+A problem like this would take a static site generator to solve, but not just
+any static site generator would do the trick. This generator must have a
+focus on translation, allowing you to build several copies of the same page
+based on different localization files.
 
 Now, you can leave the translation to the globalization team and focus on
 your code.

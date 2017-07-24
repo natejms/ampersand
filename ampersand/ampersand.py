@@ -68,9 +68,8 @@ class Ampersand(object):
                 # Update the _ampersand.json file by adding the plugin
                 self.config["plugins"][p.basename(plugin)] = p.join(
                     self.config["modules"], plugin )
-                updated = open(p.join(self.root, "_ampersand.json"), "w")
-                updated.write(json.dumps(self.config, indent=4))
-                updated.close()
+                with open(p.join(self.root, "_ampersand.json"), "w", encoding="utf-8") as updated:
+                    updated.write(json.dumps(self.config, indent=4, ensure_ascii=False))
             except (subprocess.CalledProcessError, KeyboardInterrupt) as e:
                 print(str(e))
                 sys.exit()
@@ -86,16 +85,15 @@ class Ampersand(object):
             rmtree(p.join( self.root, self.config["modules"], name ))
         except FileNotFoundError:
             pass
-        except PermissionError as e:
+        except (IOError, OSError) as e:
             print(str(e))
             print("Couldn't remove plugin. You may need to delete it manually.")
 
         try:
             # Update _ampersand.json by adding the plugin
             self.config["plugins"].pop(name)
-            updated = open(p.join(self.root, "_ampersand.json"), "w")
-            updated.write(json.dumps(self.config, indent=4))
-            updated.close()
+            with open(p.join(self.root, "_ampersand.json"), "w", encoding="utf-8") as updated:
+                    updated.write(json.dumps(self.config, indent=4, ensure_ascii=False))
         except KeyError:
             print("Failed to remove plugin '%s' as it is not installed." % name)
             sys.exit()
@@ -118,3 +116,4 @@ class Ampersand(object):
                 ImportError, AttributeError) as e:
             print("Failed to run plugin '%s': %s" % (name, e))
             return content
+

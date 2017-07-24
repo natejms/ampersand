@@ -12,14 +12,8 @@ import sys, os, json, pystache
 p = os.path # Aliasing os.path to 'p'
 
 def read_file(path):
-
-    # Open a file and return its contents
-    try:
-        with open(path, "r") as f:
-            return f.read()
-    except PermissionError as e:
-        print(str(e))
-        sys.exit()
+    with open(path, "r") as f:
+        return f.read()
 
 def get_json(path):
 
@@ -27,7 +21,7 @@ def get_json(path):
     try:
         return json.loads(read_file(path))
 
-    except json.decoder.JSONDecodeError as e:
+    except ValueError as e:
         print("Failed to get JSON from '%s': %s" % (path, str(e)))
         sys.exit()
 
@@ -42,7 +36,7 @@ def get_content(path):
         content = page[1]
         try:
             frontmatter = json.loads("{ %s }" % page[0])
-        except json.decoder.JSONDecodeError:
+        except ValueError:
             frontmatter = {}
     except IndexError:
         content = page[0]
@@ -152,7 +146,7 @@ def collect(site):
                         frontmatter = trans["_frontmatter"]
                     except KeyError:
                         continue
-                except json.decoder.JSONDecodeError:
+                except ValueError:
                     trans = {}
                     text = get_content(p.join(lang_dir, page))
                     if not text[0]:
@@ -163,7 +157,7 @@ def collect(site):
                 # Getting the global translations
                 try:
                     _global = get_json(p.join(lang_dir, "_global.json"))
-                except OSError:
+                except (IOError, OSError):
                     _global = {}
 
                 includes_files = os.listdir(p.join(root, config["includes"]))
@@ -222,3 +216,4 @@ def build_pages(content, site):
 
             except OSError as e:
                 print(" ** Skipping '%s': %s" % (page, str(e)))
+

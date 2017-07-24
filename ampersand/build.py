@@ -146,10 +146,11 @@ def collect(site):
                         frontmatter = trans["_frontmatter"]
                     except KeyError:
                         continue
-                except ValueError:
+                except ValueError as e:
                     trans = {}
                     text = get_content(p.join(lang_dir, page))
                     if not text[0]:
+                        if site.verbose: print(" ** Skipping '%s': '%s'" % (page, str(e)))
                         continue
                     frontmatter = text[0]
                     page_content = text[1]
@@ -192,8 +193,11 @@ def build_pages(content, site):
     root = site.root
 
     # Iterate through the plugins
-    for key, value in sorted(config["plugins"].items()):
-        site.plugin_run(key, "builder", content)
+    if config["plugins"] is not False:
+        print(" * Passing content to the plugins")
+        for key, value in sorted(config["plugins"].items()):
+            if site.verbose: print(" ** Running %s" % key)
+            site.plugin_run(key, "builder", content)
 
     for lang in sorted(content.keys()):
         # Loop through each language dictionary
@@ -210,10 +214,10 @@ def build_pages(content, site):
             # Build the pages
             fm = content[lang][page]["frontmatter"]
             try:
+                if site.verbose: print(" ** Generating '%s'" % page)
                 build_file(p.join(root, config["modals"], fm["modal"]),
                            p.join(root, config["site"], fm["url"]),
                            content[lang][page])
 
             except OSError as e:
                 print(" ** Skipping '%s': %s" % (page, str(e)))
-

@@ -17,7 +17,7 @@ class Ampersand(object):
 
     """docstring for Ampersand."""
 
-    def __init__(self):
+    def __init__(self, verbose):
 
         # Attempt to find the _ampersand.json configuration file
         try:
@@ -40,6 +40,7 @@ class Ampersand(object):
 
         self.root = root
         self.config = config
+        self.verbose = verbose
 
     def serve(self):
 
@@ -114,6 +115,5 @@ class Ampersand(object):
 
         except (KeyError, OSError, TypeError,
                 ImportError, AttributeError) as e:
-            print("Failed to run plugin '%s': %s" % (name, e))
+            if self.verbose: print(" *** Failed to run plugin '%s': %s" % (name, e))
             return content
-

@@ -17,7 +17,7 @@ def call_for_help(msg=""):
     print("""
 ** Ampersand - the minimal translation manager **
 
-Usage: amp <command> [args]
+Usage: amp [options] <command> [args]
 
                  help - Display this message
     new <name> [lang] - Creates an empty Ampersand website
@@ -25,6 +25,8 @@ Usage: amp <command> [args]
      plugin <command> -  Manages plugins
                add <name> - Adds a plugin via Git
             remove <name> - Removes a plugin
+
+         -v --verbose - Print verbose output
     """)
 
 def amp(args, site):

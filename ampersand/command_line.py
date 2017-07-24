@@ -18,5 +18,5 @@ def main():
         build.amp_new(args)
     else:
         print("Initializing the website...")
-        site = ampersand.Ampersand()
+        site = ampersand.Ampersand(("-v" in args or "--verbose" in args))
         handler.amp(args, site)

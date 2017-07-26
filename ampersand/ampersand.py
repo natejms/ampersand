@@ -66,8 +66,14 @@ class Ampersand(object):
             try:
                 clone = subprocess.check_call(["git", "clone", url, plugin_path])
 
+                try:
+                    plugins_dict = self.config["plugins"]
+                except KeyError:
+                    self.config["plugins"] = {}
+                    plugins_dict = self.config["plugins"]
+
                 # Update the _ampersand.json file by adding the plugin
-                self.config["plugins"][p.basename(plugin)] = p.join(
+                plugins_dict[p.basename(plugin)] = p.join(
                     self.config["modules"], plugin )
                 with open(p.join(self.root, "_ampersand.json"), "w", encoding="utf-8") as updated:
                     updated.write(json.dumps(self.config, indent=4, ensure_ascii=False))

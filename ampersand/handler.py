@@ -49,19 +49,28 @@ def amp(args, site):
         elif "remove" in args:
             # Remove plugins
             removed = False
-            for i in args:
-                if i in site.config["plugins"]:
-                    site.plugin_remove(i)
-                    removed = True
+            try:
+                for i in args:
+                    if i in site.config["plugins"]:
+                        site.plugin_remove(i)
+                        removed = True
 
-            if not removed:
-                print("Couldn't find the plugin.")
+                if not removed:
+                    print("Couldn't find the plugin.")
+
+            except KeyError:
+                print("No plugins installed.")
         else:
             # Call for help
             call_for_help("The command 'amp plugin' takes at least two more "
                         + "arguments.")
     else:
         # Iterate through handler plugins
-        for key in sorted(site.config["plugins"].keys()):
-            site.plugin_run(key, "handler", args)
+        try:
+            for key in sorted(site.config["plugins"].keys()):
+                site.plugin_run(key, "handler", args)
+
+        except KeyError:
+            pass
+
         print("Nothing more to do.")

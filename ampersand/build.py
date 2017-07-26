@@ -193,11 +193,15 @@ def build_pages(content, site):
     root = site.root
 
     # Iterate through the plugins
-    if config["plugins"] is not False:
-        print(" * Passing content to the plugins")
-        for key, value in sorted(config["plugins"].items()):
-            if site.verbose: print(" ** Running %s" % key)
-            site.plugin_run(key, "builder", content)
+    try:
+        if config["plugins"] is not False:
+            print(" * Passing content to the plugins")
+            for key, value in sorted(config["plugins"].items()):
+                if site.verbose: print(" ** Running %s" % key)
+                site.plugin_run(key, "builder", content)
+
+    except KeyError:
+        pass
 
     for lang in sorted(content.keys()):
         # Loop through each language dictionary

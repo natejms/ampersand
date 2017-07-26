@@ -1,4 +1,9 @@
 {
+  "_frontmatter": {
+    "url": "index.html",
+    "modal": "index.html"
+  },
+
   "header": "The really, <em>really</em> minimalistic static site generator",
   "tagline": "#letcodebecode",
   "outline": "Managing multiple translations of a website statically is painful, and no one likes dynamic web pages these days. <strong>Ampersand</strong> is the solution.",

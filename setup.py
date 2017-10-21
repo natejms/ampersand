@@ -36,7 +36,8 @@ setup(
         ]
     },
     install_requires = [
-        "pystache"
+        "pystache",
+        "future"
     ],
     include_package_data = True,
     zip_safe = False

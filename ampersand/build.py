@@ -52,7 +52,7 @@ def build_file(modal, new_file, content):
     # Generate the new file using the template
     try:
         generated = open(new_file, "w")
-    except FileNotFoundError:
+    except IOError:
         os.makedirs(p.dirname(new_file))
         generated = open(new_file, "w")
 
@@ -219,8 +219,14 @@ def build_pages(content, site):
             fm = content[lang][page]["frontmatter"]
             try:
                 if site.verbose: print(" ** Generating '%s'" % page)
+
+                if lang != config["primary"]:
+                    file_path = p.join(root, config["site"], lang, fm["url"])
+                else:
+                    file_path = p.join(root, config["site"], fm["url"])
+
                 build_file(p.join(root, config["modals"], fm["modal"]),
-                           p.join(root, config["site"], fm["url"]),
+                           file_path,
                            content[lang][page])
 
             except OSError as e:

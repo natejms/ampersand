@@ -8,12 +8,45 @@ from builtins import str
 from future import standard_library
 standard_library.install_aliases()
 
-import sys, os, json, pystache
+import sys, os, json, pystache, shutil, errno
 p = os.path # Aliasing os.path to 'p'
+
+def relative(origin):
+    def joined (*to):
+        path = origin
+
+#        if len(to) > 1:
+        for t in to:
+            path = os.path.join(path, t)
+#        else:
+#            path = os.path.join(path, to)
+
+        return path
+
+    return joined
 
 def read_file(path):
     with open(path, "r") as f:
         return f.read()
+
+def copy_content(src, dest):
+    if os.path.exists(src):
+        try:
+            if os.path.exists(dest):
+                shutil.rmtree(dest)
+            shutil.copytree(src, dest)
+        except OSError as exc:
+            try:
+                if exc.errno == errno.ENOTDIR:
+                    shutil.copy(src, dest)
+                else: raise
+            except OSError as e:
+                print("Couldn't copy: %s" % str(e))
+    else:
+        print("Source path doesn't exist: %s" % src)
+
+def path_name(path):
+    return os.path.basename(os.path.normpath(path))
 
 def get_json(path):
 
@@ -189,8 +222,10 @@ def collect(site):
 
 def build_pages(content, site):
 
+    print(json.dumps(content, indent=4))
+
     config = site.config
-    root = site.root
+    root = relative(site.root)
 
     # Iterate through the plugins
     try:
@@ -200,14 +235,21 @@ def build_pages(content, site):
                 if site.verbose: print(" ** Running %s" % key)
                 site.plugin_run(key, "builder", content)
 
+    except (KeyError, TypeError):
+        pass
+
+    try:
+        for item in config["manifest"]:
+            copy_content(
+                root(item)
+              , root(config["site"]
+                  , path_name(item)))
+
     except KeyError:
         pass
 
     for lang in sorted(content.keys()):
         # Loop through each language dictionary
-        if lang != config["primary"]:
-            if not p.exists(p.join(root, config["site"], config["primary"])):
-                os.mkdir(p.join(root, config["site"], config["primary"]))
 
         for page in sorted(content[lang].keys()):
             # Loop through each page
@@ -221,11 +263,11 @@ def build_pages(content, site):
                 if site.verbose: print(" ** Generating '%s'" % page)
 
                 if lang != config["primary"]:
-                    file_path = p.join(root, config["site"], lang, fm["url"])
+                    file_path = root(config["site"], lang, fm["url"])
                 else:
-                    file_path = p.join(root, config["site"], fm["url"])
+                    file_path = root(config["site"], fm["url"])
 
-                build_file(p.join(root, config["modals"], fm["modal"]),
+                build_file(root(config["modals"], fm["modal"]),
                            file_path,
                            content[lang][page])
 

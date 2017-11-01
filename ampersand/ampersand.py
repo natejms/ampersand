@@ -55,11 +55,12 @@ class Ampersand(object):
         print("Done.")
 
     def plugin_add(self, url):
+        root = relative(self.root)
 
         try:
             # Decide on what to call the plugin and its path
             plugin = p.split(url)[1]
-            plugin_path = p.join(self.root, self.config["modules"], plugin)
+            plugin_path = root(self.config["modules"], plugin)
 
             # Download the plugin via git
             print("Installing Ampersand plugin '%s'" % plugin)
@@ -85,11 +86,12 @@ class Ampersand(object):
             print("Missing entry in your configuration file: %s" % str(e))
 
     def plugin_remove(self, name):
+        root = relative(self.root)
 
         try:
             # Delete the directory containing the plugin
             print("Removing plugin '%s'" % name)
-            rmtree(p.join( self.root, self.config["modules"], name ))
+            rmtree(root(self.config["modules"], name ))
         except FileNotFoundError:
             pass
         except (IOError, OSError) as e:
@@ -99,21 +101,23 @@ class Ampersand(object):
         try:
             # Update _ampersand.json by adding the plugin
             self.config["plugins"].pop(name)
-            with open(p.join(self.root, "_ampersand.json"), "w", encoding="utf-8") as updated:
+            with open(root("_ampersand.json"), "w", encoding="utf-8") as updated:
                     updated.write(json.dumps(self.config, indent=4, ensure_ascii=False))
         except KeyError:
             print("Failed to remove plugin '%s' as it is not installed." % name)
             sys.exit()
 
     def plugin_run(self, name, method, content):
+        root = relative(self.root)
+
         try:
             # Retrieve the _plugin.json file
             plugin = build.get_json(
-                p.join(self.root, self.config["plugins"][name], "_plugin.json"))
+                root(self.config["plugins"][name], "_plugin.json"))
 
             # Load and run the module
             if plugin["method"] == method:
-                sys.path.append(p.join(self.root, self.config["plugins"][name]))
+                sys.path.append(root(self.config["plugins"][name]))
                 module = importlib.import_module(plugin["init"], name)
                 content = module.main(content, self)
 
@@ -121,5 +125,4 @@ class Ampersand(object):
 
         except (KeyError, OSError, TypeError,
                 ImportError, AttributeError) as e:
-            if self.verbose: print(" *** Failed to run plugin '%s': %s" % (name, e))
             return content

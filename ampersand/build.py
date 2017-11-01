@@ -15,11 +15,8 @@ def relative(origin):
     def joined (*to):
         path = origin
 
-#        if len(to) > 1:
         for t in to:
             path = os.path.join(path, t)
-#        else:
-#            path = os.path.join(path, to)
 
         return path
 
@@ -143,19 +140,19 @@ def amp_new(args):
 
 def collect(site):
     # Create variables pointing to items in the configuration
-    root = site.root
+    root = relative(site.root)
     config = site.config
 
     content = {}
 
     # Collect the translation's files into a list
     lang = [name for name in
-           os.listdir(p.join(root, config["translations"]))
-           if p.isdir(p.join(root, config["translations"], name))]
+           os.listdir(root(config["translations"]))
+           if p.isdir(root(config["translations"], name))]
 
     for directory in lang:
         # Looping through the language directories
-        lang_dir = p.join(root, config["translations"], directory)
+        lang_dir = root(config["translations"], directory)
         pages = []
 
         # Iterate through directories and subdirectories
@@ -194,14 +191,13 @@ def collect(site):
                 except (IOError, OSError):
                     _global = {}
 
-                includes_files = os.listdir(p.join(root, config["includes"]))
+                includes_files = os.listdir(root(config["includes"]))
                 includes = {}
 
                 for i in range(len(includes_files)):
                     # Read the layout into "contents"
-                    contents = read_file(p.join(root,
-                                                config["includes"],
-                                                includes_files[i]))
+                    contents = read_file(root(config["includes"],
+                                              includes_files[i]))
 
                     # Render the includes using _ampersand.json and _global.json
                     includes[p.splitext(includes_files[i])[0]] = pystache.render(
@@ -221,9 +217,6 @@ def collect(site):
     return content
 
 def build_pages(content, site):
-
-    print(json.dumps(content, indent=4))
-
     config = site.config
     root = relative(site.root)
 

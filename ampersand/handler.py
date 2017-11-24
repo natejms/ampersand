@@ -15,7 +15,7 @@ def call_for_help(msg=""):
 
     # Command usage
     print("""
-** Ampersand 0.5.1 - the minimal translation manager **
+** Ampersand 0.5.2 - the minimal translation manager **
 
 Usage: amp [options] <command> [args]
 
